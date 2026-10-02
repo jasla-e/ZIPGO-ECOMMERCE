@@ -27,51 +27,71 @@ function Profile() {
   useEffect(() => {
     fetchUser();
   }, []);
+   const fetchUser = async () => {
+      console.log("FETCH USER CALLED");
+  try {
+    const token = localStorage.getItem("token");
 
-  const fetchUser = async () => {
-    try {
-      const storedUser = JSON.parse(
-        localStorage.getItem("user")
-      );
-
-      if (!storedUser?.id) return;
-
-      const res = await axios.get(
-        `http://localhost:4000/users/${storedUser.id}`
-      );
-
-      const userData = {
-        ...res.data,
-        addresses: res.data.addresses || [],
-      };
-
-      setUser(userData);
-
-      setFormData({
-        name: userData.name || "",
-        email: userData.email || "",
-        phone: userData.phone || "",
-        gender: userData.gender || "",
-        dob: userData.dob || "",
-      });
-
-    } catch (error) {
-      console.log(error);
+    if (!token) {
+      console.log("No token found");
+      return;
     }
-  };
 
+    const res = await axios.get(
+      "https://localhost:7150/api/User/profile",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("PROFILE RESPONSE:", res.data);
+
+    const userData = {
+      ...res.data,
+      addresses: res.data.addresses || [],
+    };
+
+    setUser(userData);
+
+    setFormData({
+      name: userData.name || "",
+      email: userData.email || "",
+      phone: userData.phone || "",
+      gender: userData.gender || "",
+      dob: userData.dob || "",
+    });
+  } catch (error) {
+    console.log("PROFILE ERROR:", error);
+  }
+};
+ 
   // UPDATE PROFILE//
   const handleSaveProfile = async () => {
     try {
-      const updatedUser = {
-        ...user,
-        ...formData,
-        addresses: user.addresses || [],
-      };
+      const token=localStorage.getItem("token");
+
+      if(!token){
+        console.log("No token Found");
+        return;
+      }
+
+        const updatedUser = {
+      ...user,
+      ...formData,
+      addresses: user.addresses || [],
+    };
+
 
       await axios.put(
-        `http://localhost:4000/users/${user.id}`,
-        updatedUser
+        `https://localhost:7150/api/User/profile`,
+        updatedUser,
+        {
+          headers:{
+            Authorization:`Bearer ${token}`,
+          },
+        }
       );
 
       setUser(updatedUser);

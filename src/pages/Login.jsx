@@ -20,57 +20,64 @@ export default function Login() {
   const dispatch = useDispatch();
 
 
-  const handleLogin = async (e) => {
+const handleLogin = async (e) => {
   e.preventDefault();
 
   try {
-    const result = await loginUser(email, password);
+    const user = await loginUser(email, password);
 
-    console.log("LOGIN RESPONSE:", result);
+    console.log("LOGIN RESPONSE:", user);
 
-    alert("Login API successful");
+    setUser(user);
+    localStorage.setItem("user", JSON.stringify(user));
+
+    {/* cart restore */}
+    const pendingCartItem = JSON.parse(
+      localStorage.getItem("pending_cart_item")
+    );
+
+    if (pendingCartItem) {
+      await dispatch(addToCartAsync(pendingCartItem));
+      localStorage.removeItem("pending_cart_item");
+    }
+
+    await dispatch(getCart());
+
+    {/* wishlist restoring */}
+    await dispatch(getWishlist());
+
+    const pendingWishlistItem =
+      localStorage.getItem("pending_wishlist_item");
+
+    if (user.role === "admin") {
+      navigate("/admin");
+    } else if (
+      pendingWishlistItem &&
+      pendingWishlistItem !== "navbar"
+    ) {
+      await dispatch(
+        addToWishlistAsync(JSON.parse(pendingWishlistItem))
+      );
+
+      localStorage.removeItem("pending_wishlist_item");
+      navigate("/wishlist");
+
+    } else if (pendingWishlistItem === "navbar") {
+      localStorage.removeItem("pending_wishlist_item");
+      navigate("/wishlist");
+
+    } else if (pendingCartItem) {
+      navigate("/cart");
+
+    } else {
+      navigate("/home");
+    }
+
   } catch (err) {
-    console.log(" LOGIN ERROR:", err);
+    console.log("LOGIN ERROR:", err);
     alert(err.message);
   }
 };
-
-{/*cart restore*/}
-      const pendingCartItem = JSON.parse(
-        localStorage.getItem("pending_cart_item")
-      );
-
-      if (pendingCartItem) {
-        await dispatch(addToCartAsync(pendingCartItem));
-        localStorage.removeItem("pending_cart_item");
-      }
-
-      await dispatch(getCart());
-
-      {/*wishlist restoring*/}
-      await dispatch(getWishlist());
-  
-      const pendingWishlistItem = localStorage.getItem("pending_wishlist_item");
-
-    if (user.role==="admin"){
-      navigate("/admin");
-    }else if (pendingWishlistItem && pendingWishlistItem!=="navbar"){
-      await dispatch(addToWishlistAsync(JSON.parse(pendingWishlistItem))
-    );
-    localStorage.removeItem("pending_wishlist_item");
-    navigate("/wishlist");
-  }else if (pendingWishlistItem==="navbar"){
-    localStorage.removeItem("pending_wishlist_item");
-    navigate("/wishlist")
-  }else if(pendingCartItem){
-    navigate("/cart");
-  }else{
-    navigate("/home")
-  }
-    } catch (err) {
-      alert(err.message);
-    }
-  };
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
