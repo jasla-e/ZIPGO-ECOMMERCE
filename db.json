@@ -499,7 +499,17 @@
       "dob": "2004-03-18",
       "isBlocked": false,
       "role": "user",
-      "addresses": []
+      "addresses": [
+        {
+          "id": 1789625976359,
+          "fullName": "m",
+          "phone": "m",
+          "house": " n",
+          "city": "m",
+          "state": "k",
+          "pincode": "m"
+        }
+      ]
     },
     {
       "name": "amal",
@@ -1029,8 +1039,104 @@
       },
       "createdAt": "2026-07-02T08:24:57.703Z",
       "userId": "fHuIedsVI-M",
+      "status": "shipped",
+      "id": "-k9sMZEcvOE",
+      "notification": "Your order has been shipped 🚚"
+    },
+    {
+      "items": [
+        {
+          "userEmail": "jaslaedakkodan@gmail.com",
+          "productId": "1",
+          "title": "Osprey Aether 60 L ",
+          "price": 5000,
+          "image": "/images/hkbag1.png",
+          "category": "HIKING & TREKKING",
+          "stock": 5,
+          "quantity": 1,
+          "id": "kFhH-wHEdbc"
+        }
+      ],
+      "totalAmount": 5000,
+      "paymentMethod": "COD",
+      "address": {
+        "fullName": "Jasla Edakkodan",
+        "phone": "1234567899",
+        "house": "djjd",
+        "city": "dj",
+        "pincode": "123456"
+      },
+      "createdAt": "2026-07-29T08:49:12.882Z",
+      "userId": "fHuIedsVI-M",
       "status": "pending",
-      "id": "-k9sMZEcvOE"
+      "id": "1VvDXBseRg8"
+    },
+    {
+      "items": [
+        {
+          "userEmail": "jaslaedakkodan@gmail.com",
+          "productId": "18",
+          "title": "AURA Noise-Canceling Wireless Headphones",
+          "price": 3200,
+          "image": "/images/it3.png",
+          "category": "INTERNATIONAL TRAVEL",
+          "stock": 8,
+          "quantity": 1,
+          "id": "RL8wJk8c72s"
+        }
+      ],
+      "totalAmount": 3200,
+      "paymentMethod": "COD",
+      "address": {
+        "fullName": "Jasla Edakkodan",
+        "phone": "9845645532",
+        "house": "fvggggggggggggggg",
+        "city": "dsfff",
+        "pincode": "123454"
+      },
+      "createdAt": "2026-09-06T10:55:07.146Z",
+      "userId": "fHuIedsVI-M",
+      "status": "pending",
+      "id": "pjpcu_WeRO0"
+    },
+    {
+      "items": [
+        {
+          "userEmail": "jaslaedakkodan@gmail.com",
+          "productId": "1",
+          "title": "Osprey Aether 60 L ",
+          "price": 5000,
+          "image": "/images/hkbag1.png",
+          "category": "HIKING & TREKKING",
+          "stock": 5,
+          "quantity": 2,
+          "id": "_xYZBt6Xmqk"
+        },
+        {
+          "userEmail": "jaslaedakkodan@gmail.com",
+          "productId": "7",
+          "title": "Forclaz Hiking pole",
+          "price": 1599,
+          "image": "/images/hkstck.png",
+          "category": "HIKING & TREKKING",
+          "stock": 7,
+          "quantity": 1,
+          "id": "hAM7QjpxJZU"
+        }
+      ],
+      "totalAmount": 11599,
+      "paymentMethod": "COD",
+      "address": {
+        "fullName": "Jasla Edakkodan",
+        "phone": "2563333333",
+        "house": "jaj",
+        "city": "sjskj",
+        "pincode": "685239"
+      },
+      "createdAt": "2026-09-14T09:22:41.442Z",
+      "userId": "fHuIedsVI-M",
+      "status": "pending",
+      "id": "_Z_jZq0KArM"
     }
   ],
   "cart": [
@@ -1044,6 +1150,39 @@
       "stock": 5,
       "quantity": 1,
       "id": "1mVM8LZLnxM"
+    },
+    {
+      "userEmail": "admin@gmail.com",
+      "productId": "8",
+      "title": "Nikon Monarch M7 Binocular ",
+      "price": 12000,
+      "image": "/images/hkbnc.png",
+      "category": "HIKING & TREKKING",
+      "stock": 10,
+      "quantity": 1,
+      "id": "u2EpnmzinRo"
+    },
+    {
+      "userEmail": "jaslaedakkodan@gmail.com",
+      "productId": "1",
+      "title": "Osprey Aether 60 L ",
+      "price": 5000,
+      "image": "/images/hkbag1.png",
+      "category": "HIKING & TREKKING",
+      "stock": 5,
+      "quantity": 3,
+      "id": "4xH2SU32gWQ"
+    },
+    {
+      "userEmail": "jaslaedakkodan@gmail.com",
+      "productId": "7",
+      "title": "Forclaz Hiking pole",
+      "price": 1599,
+      "image": "/images/hkstck.png",
+      "category": "HIKING & TREKKING",
+      "stock": 7,
+      "quantity": 1,
+      "id": "7AS5MkUGrAc"
     }
   ],
   "wishlist": [
@@ -1056,6 +1195,16 @@
       "category": "HIKING & TREKKING",
       "stock": 10,
       "id": "7FdAbH429hg"
+    },
+    {
+      "userEmail": "jaslaedakkodan@gmail.com",
+      "productId": "2",
+      "title": "Forclaz Women Puffer Jacket ",
+      "price": 2999,
+      "image": "/images/hkjkt.png",
+      "category": "HIKING & TREKKING",
+      "stock": 0,
+      "id": "R4qlQuCobhg"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

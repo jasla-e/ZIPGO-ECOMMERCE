@@ -17,6 +17,7 @@ export default function Register() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
+       
     try {
       await registerUser({
         name,

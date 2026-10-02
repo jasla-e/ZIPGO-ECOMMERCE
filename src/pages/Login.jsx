@@ -19,15 +19,21 @@ export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+
   const handleLogin = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      const user = await loginUser(email, password);
+  try {
+    const result = await loginUser(email, password);
 
-      {/*save user ,dont go when refresh*/}
-      setUser(user);
-      localStorage.setItem("user", JSON.stringify(user));
+    console.log("LOGIN RESPONSE:", result);
+
+    alert("Login API successful");
+  } catch (err) {
+    console.log(" LOGIN ERROR:", err);
+    alert(err.message);
+  }
+};
 
 {/*cart restore*/}
       const pendingCartItem = JSON.parse(
