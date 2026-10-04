@@ -4,8 +4,8 @@ import { useDispatch } from "react-redux";
 import { getUser } from "./utils/auth";
 import { getWishlist } from "./redux/slices/wishlistSlice";
 import { getCart } from "./redux/slices/cartSlice";
-
 import { Routes, Route } from "react-router-dom";
+
 
 import UserLayout from "./layout/UserLayout";
 import Intro from "./pages/Intro";
@@ -47,7 +47,7 @@ function App() {
 
   return (
     <>
-    
+     
       <Routes>
         
        <Route element={<UserLayout />}>

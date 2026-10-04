@@ -5,34 +5,34 @@ import { updateProduct } from "../../redux/slices/productSlice";
 function EditProduct({ product, setShowEditModal }) {
   const dispatch = useDispatch();
 
-  const [formData, setFormData] = useState({
-    title: "",
-    details: "",
-    price: "",
-    category: "",
-    subCategory: "",
-    image: "",
-    stock: "",
-    rating: "",
-    offer: false,
-  });
+const [formData, setFormData] = useState({
+  name: "",
+  description: "",
+  price: "",
+  mainCategoryId: "",
+  subCategoryId: "",
+  stock: "",
+  rating: "",
+  offer: false,
+  image: "",
+});
 
   // LOAD PRODUCT DATA//
-  useEffect(() => {
-    if (product) {
-      setFormData({
-        title: product.title || "",
-        details: product.details || "",
-        price: product.price || "",
-        category: product.category || "",
-        subCategory: product.subCategory || "",
-        image: product.image || "",
-        stock: product.stock || "",
-        rating: product.rating || "",
-        offer: product.offer || false,
-      });
-    }
-  }, [product]);
+ useEffect(() => {
+  if (product) {
+    setFormData({
+      name: product.name || "",
+      description: product.description || "",
+      price: product.price || "",
+      mainCategoryId: product.mainCategoryId || "",
+      subCategoryId: product.subCategoryId || "",
+      stock: product.stock || "",
+      rating: product.rating || "",
+      offer: product.offer || false,
+      image: product.image || "",
+    });
+  }
+}, [product]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -43,38 +43,50 @@ function EditProduct({ product, setShowEditModal }) {
     });
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+ const handleImageUpload = (e) => {
+  const file = e.target.files[0];
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData((prev) => ({
-        ...prev,
-        image: reader.result,
-      }));
-    };
+  if (!file) return;
 
-    reader.readAsDataURL(file);
-  };
+  setFormData((prev) => ({
+    ...prev,
+    image: file,
+  }));
+};
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-    dispatch(
-      updateProduct({
-        id: product.id,
-        updatedData: {
-          ...formData,
-          price: Number(formData.price),
-          stock: Number(formData.stock),
-          rating: Number(formData.rating),
-        },
-      })
-    );
+  const data = new FormData();
 
-    setShowEditModal(false);
-  };
+  data.append("Name", formData.name);
+  data.append("Description", formData.description);
+  data.append("Price", formData.price);
+  data.append("Rating", formData.rating);
+  data.append("Stock", formData.stock);
+  data.append("Offer", formData.offer);
+  data.append("MainCategoryId", formData.mainCategoryId);
+  data.append("SubCategoryId", formData.subCategoryId);
+
+  if (formData.image instanceof File) {
+    data.append("image", formData.image);
+  }
+
+  dispatch(
+    updateProduct({
+      id: product.id,
+      updatedData: data,
+    })
+  )
+    .unwrap()
+    .then(() => {
+      setShowEditModal(false);
+    })
+    .catch((err) => {
+      console.log("UPDATE ERROR:", err);
+    });
+};
+
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50 p-4">
@@ -86,15 +98,15 @@ function EditProduct({ product, setShowEditModal }) {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-          <input name="title" value={formData.title} onChange={handleChange} className="border p-3 rounded-lg" />
+          <input name="name" value={formData.name} onChange={handleChange} className="border p-3 rounded-lg" />
 
-          <input name="details" value={formData.details} onChange={handleChange} className="border p-3 rounded-lg" />
+          <input name="description" value={formData.description} onChange={handleChange} className="border p-3 rounded-lg" />
 
           <input name="price" type="number" value={formData.price} onChange={handleChange} className="border p-3 rounded-lg" />
 
-          <input name="category" value={formData.category} onChange={handleChange} className="border p-3 rounded-lg" />
+          <input name="mainCategoryId" value={formData.mainCategoryId} onChange={handleChange} className="border p-3 rounded-lg" />
 
-          <input name="subCategory" value={formData.subCategory} onChange={handleChange} className="border p-3 rounded-lg" />
+          <input name="subCategoryId" value={formData.subCategoryId} onChange={handleChange} className="border p-3 rounded-lg" />
 
           <input name="stock" type="number" value={formData.stock} onChange={handleChange} className="border p-3 rounded-lg" />
 
@@ -103,9 +115,8 @@ function EditProduct({ product, setShowEditModal }) {
           {/* IMAGE */}
           <input type="file" accept="image/*" onChange={handleImageUpload} className="border p-2 rounded-lg" />
 
-          {formData.image && (
-            <img src={formData.image} className="w-24 h-24 object-cover rounded border" />
-          )}
+           {formData.image &&
+            (<img src={ formData.image instanceof File? URL.createObjectURL(formData.image) : product.image}className="w-24 h-24 object-cover rounded border" />)}
 
           {/* OFFER */}
           <label className="flex items-center gap-2">

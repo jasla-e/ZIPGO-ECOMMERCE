@@ -1,19 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:4000/products";
+const BASE_URL = "https://localhost:7150/api/Product";
 
 
 // FETCH PRODUCTS//
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async () => {
-
     const res = await axios.get(BASE_URL);
 
-    return Array.isArray(res.data)
-      ? res.data
-      : res.data.products || res.data.data || [];
+    return res.data;
   }
 );
 
@@ -23,42 +20,65 @@ export const addProduct = createAsyncThunk(
   "products/addProduct",
   async (productData) => {
 
+    const token = localStorage.getItem("token");
+
     const res = await axios.post(
       BASE_URL,
-      productData
+      productData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
     return res.data;
   }
 );
-
 
 // DELETE PRODUCT//
 export const deleteProduct = createAsyncThunk(
   "products/deleteProduct",
   async (id) => {
 
-    await axios.delete(`${BASE_URL}/${id}`);
+    const token = localStorage.getItem("token");
+
+    await axios.delete(
+      `${BASE_URL}/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     return id;
   }
 );
 
-
 // UPDATE PRODUCT//
+
 export const updateProduct = createAsyncThunk(
   "products/updateProduct",
   async ({ id, updatedData }) => {
+    const token = localStorage.getItem("token");
 
     const res = await axios.put(
       `${BASE_URL}/${id}`,
-      updatedData
+      updatedData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
-    return res.data;
+    return {
+      ...res.data,
+      id: id,
+    };
   }
 );
-
 
 const productSlice = createSlice({
   name: "products",

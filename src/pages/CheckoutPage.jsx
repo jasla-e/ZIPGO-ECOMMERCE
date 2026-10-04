@@ -40,42 +40,51 @@ function CheckoutPage() {
   }, []);
 
   const fetchUser = async () => {
-    try {
-      const storedUser = JSON.parse(
-        localStorage.getItem("user")
-      );
+  try {
+    const token = localStorage.getItem("token");
 
-      if (!storedUser?.id) return;
-
-      const response = await fetch(
-        `http://localhost:4000/users/${storedUser.id}`
-      );
-
-      const data = await response.json();
-
-      const userData = {
-        ...data,
-        addresses: data.addresses || [],
-      };
-
-      setUser(userData);
-
-      // AUTO FILL FIRST ADDRESS//
-      if (userData.addresses.length > 0) {
-        const firstAddress = userData.addresses[0];
-
-        setSelectedAddressId(firstAddress.id);
-
-        setFullName(firstAddress.fullName || "");
-        setPhone(firstAddress.phone || "");
-        setHouse(firstAddress.house || "");
-        setCity(firstAddress.city || "");
-        setPincode(firstAddress.pincode || "");
-      }
-
-    } catch (error) {
-      console.log(error);
+    if (!token) {
+      console.log("No token found");
+      return;
     }
+
+    const response = await fetch(
+      "https://localhost:7150/api/Address",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch addresses");
+    }
+
+    const addresses = await response.json();
+
+    const userData = {
+      addresses: addresses || [],
+    };
+
+    setUser(userData);
+
+    // AUTO FILL FIRST ADDRESS
+    if (addresses.length > 0) {
+      const firstAddress = addresses[0];
+
+      setSelectedAddressId(firstAddress.id);
+
+      setFullName(firstAddress.fullName || "");
+      setPhone(firstAddress.phone || "");
+      setHouse(firstAddress.houseArea || "");
+      setCity(firstAddress.city || "");
+      setPincode(firstAddress.pincode || "");
+    }
+
+  } catch (error) {
+    console.log("CHECKOUT ADDRESS ERROR:", error);
+  }
   };
 
   const handlePlaceOrder = async () => {

@@ -48,7 +48,7 @@ function ProductTable({
 
   // SEARCH FILTER//
   const filteredProducts = products.filter((product) =>
-    product.title.toLowerCase().includes(searchQuery.toLowerCase())
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // PAGINATION //
@@ -61,13 +61,7 @@ function ProductTable({
     startIndex + itemsPerPage
   );
 
-  if (!products || products.length === 0) {
-    return (
-      <div className="bg-white p-10 rounded-lg shadow text-center">
-        <h1 className="text-2xl font-semibold">No Products Found</h1>
-      </div>
-    );
-  }
+ 
 
   return (
     <>
@@ -122,13 +116,13 @@ function ProductTable({
                     <div>
                       <img
                         src={product.image}
-                        alt={product.title}
+                        alt={product.name}
                         className="w-20 h-20 object-cover rounded-lg border"
                       />
                     </div>
 
                     <div>
-     <div className="font-medium">{product.title}</div>
+     <div className="font-medium">{product.name}</div>
 
        {product.offer && (
               <span className="inline-block mt-1 px-2 py-1 text-xs bg-red-500 text-white rounded">
@@ -138,17 +132,17 @@ function ProductTable({
            </div>
 
                     <div className="text-sm text-gray-600">
-                      {product.details}
+                      {product.description}
                     </div>
 
                     <div className="font-medium">₹ {product.price}</div>
 
                     <div className="uppercase text-sm text-gray-600">
-                      {product.category}
+                      {product.mainCategoryId}
                     </div>
 
                     <div className="uppercase text-sm text-gray-600">
-                      {product.subCategory}
+                      {product.subCategoryId}
                     </div>
 
                     <div className="font-medium">{product.stock}</div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addProduct } from "../../redux/slices/productSlice";
+import { toast } from "react-toastify";
 
 function AddProduct({ setShowModal }) {
   const dispatch = useDispatch();
@@ -8,58 +9,68 @@ function AddProduct({ setShowModal }) {
   
 
   const [formData, setFormData] = useState({
-    title: "",
-    details: "",
-    price: "",
-    category: "",
-    subCategory: "",
-    image: "",
-    stock: "",
-    rating: "",
-    offer: false,
-  });
+  name: "",
+  description: "",
+  price: "",
+  mainCategoryId: "",
+  subCategoryId: "",
+  image: null,
+  stock: "",
+  rating: "",
+  offer: false,
+   });
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const { name, value, type, checked, files } = e.target;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
+  setFormData((prev) => ({
+    ...prev,
+    [name]:
+      type === "checkbox"
+        ? checked
+        : type === "file"
+        ? files[0]
+        : value,
+  }));
+};
 
+        const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  if (!formData.name.trim()) {
+    toast.error("Name is required");
+    return;
+  }
 
+  if (!formData.image) {
+    toast.error("Please upload an image");
+    return;
+  }
 
-    if (!formData.title.trim()) {
-      alert("Title is required");
-      return;
-    }
+  try {
+    const data = new FormData();
 
-    if (!formData.image) {
-      alert("Please upload an image");
-      return;
-    }
+data.append("Name", formData.name);
+data.append("Description", formData.description);
+data.append("Price", formData.price);
+data.append("Rating", formData.rating || 0);
+data.append("Stock", formData.stock || 0);
+data.append("Offer", formData.offer);
+data.append("MainCategoryId", formData.mainCategoryId);
+data.append("SubCategoryId", formData.subCategoryId);
+data.append("image", formData.image);
 
-    try {
-      await dispatch(
-        addProduct({
-          ...formData,
-          price: Number(formData.price || 0),
-          stock: Number(formData.stock || 0),
-          rating: Number(formData.rating || 0),
-        })
-      ).unwrap();
+    await dispatch(addProduct(data)).unwrap();
 
-      alert("Product added successfully");
-      setShowModal(false);
-    } catch (error) {
-      console.error(error);
-      alert("Failed to add product");
-    }
-  };
+    toast.success("Product added successfully");
+    setShowModal(false);
+
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to add product");
+  }
+};
+  
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50 p-4">
@@ -76,20 +87,20 @@ function AddProduct({ setShowModal }) {
           className="flex flex-col gap-4"
         >
           <input
-            name="title"
-            placeholder="Title"
-            value={formData.title}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-          />
+          name="name"
+          placeholder="Name"
+          value={formData.name}
+         onChange={handleChange}
+         className="border p-3 rounded-lg"
+        />
 
-          <input
-            name="details"
-            placeholder="Details"
-            value={formData.details}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
-          />
+         <input
+         name="description"
+         placeholder="Description"
+         value={formData.description}
+         onChange={handleChange}
+         className="border p-3 rounded-lg"
+        />
 
           <input
             name="price"
@@ -100,20 +111,22 @@ function AddProduct({ setShowModal }) {
             className="border p-3 rounded-lg"
           />
 
-          <input
-            name="category"
-            placeholder="Category"
-            value={formData.category}
+           <input
+            name="mainCategoryId"
+            type="number"
+           placeholder="Main Category ID"
+            value={formData.mainCategoryId}
             onChange={handleChange}
-            className="border p-3 rounded-lg"
-          />
+           className="border p-3 rounded-lg"
+           />
 
           <input
-            name="subCategory"
-            placeholder="SubCategory"
-            value={formData.subCategory}
-            onChange={handleChange}
-            className="border p-3 rounded-lg"
+           name="subCategoryId"
+           type="number"
+           placeholder="Sub Category ID"
+           value={formData.subCategoryId}
+           onChange={handleChange}
+           className="border p-3 rounded-lg"
           />
 
           <input
@@ -137,21 +150,20 @@ function AddProduct({ setShowModal }) {
 
        
         <input
-     type="text"
-      name="image"
-      placeholder="Paste image URL"
-      value={formData.image}
-       onChange={handleChange}
-       className="border p-3 rounded-lg"
-       />
+         type="file"
+         name="image"
+         accept="image/*"
+         onChange={handleChange}
+         className="border p-3 rounded-lg"
+         />
 
           {formData.image && (
-            <img
-              src={formData.image}
-              alt="preview"
-              className="w-24 h-24 object-cover rounded border"
-            />
-          )}
+  <img
+    src={URL.createObjectURL(formData.image)}
+    alt="preview"
+    className="w-24 h-24 object-cover rounded border"
+  />
+)}
 
           <label className="flex items-center gap-2">
             <input

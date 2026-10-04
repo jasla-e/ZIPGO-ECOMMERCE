@@ -25,7 +25,10 @@ const handleLogin = async (e) => {
 
   try {
     const user = await loginUser(email, password);
+     const role =
+     user["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
+    console.log("USER ROLE:", role);
     console.log("LOGIN RESPONSE:", user);
 
     setUser(user);
@@ -49,7 +52,9 @@ const handleLogin = async (e) => {
     const pendingWishlistItem =
       localStorage.getItem("pending_wishlist_item");
 
-    if (user.role === "admin") {
+
+     if (role === "Admin")
+      {
       navigate("/admin");
     } else if (
       pendingWishlistItem &&

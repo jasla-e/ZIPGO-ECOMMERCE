@@ -24,6 +24,15 @@ export const registerUser = async (user) => {
   return await response.text();
 };
 
+const decodeToken = (token) => {
+  const payload = token.split(".")[1];
+
+  const decodedPayload = atob(
+    payload.replace(/-/g, "+").replace(/_/g, "/")
+  );
+
+  return JSON.parse(decodedPayload);
+};
 
 // LOGIN USER
 export const loginUser = async (email, password) => {
@@ -47,7 +56,9 @@ export const loginUser = async (email, password) => {
 
 localStorage.setItem("token", token);
 
-return token;
+const user = decodeToken(token);
+
+return user;
 };
 
 

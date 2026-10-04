@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function Profile() {
   const [user, setUser] = useState(null);
@@ -25,10 +26,10 @@ function Profile() {
 
   // FETCH USER//
   useEffect(() => {
-    fetchUser();
+    fetchUser(),
+    fetchAddresses();
   }, []);
    const fetchUser = async () => {
-      console.log("FETCH USER CALLED");
   try {
     const token = localStorage.getItem("token");
 
@@ -46,10 +47,12 @@ function Profile() {
       }
     );
 
-    console.log("PROFILE RESPONSE:", res.data);
 
     const userData = {
       ...res.data,
+      dob: res.data.dob
+    ? res.data.dob.split("T")[0]
+    : "",
       addresses: res.data.addresses || [],
     };
 
@@ -60,13 +63,43 @@ function Profile() {
       email: userData.email || "",
       phone: userData.phone || "",
       gender: userData.gender || "",
-      dob: userData.dob || "",
+     dob: userData.dob ? userData.dob.split("T")[0] : "",
     });
   } catch (error) {
     console.log("PROFILE ERROR:", error);
   }
 };
  
+// FETCH ADDRESSES
+const fetchAddresses = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.log("No token found");
+      return;
+    }
+
+    const res = await axios.get(
+      "https://localhost:7150/api/Address",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+
+    setUser((prev) => ({
+      ...prev,
+      addresses: res.data,
+    }));
+  } catch (error) {
+    console.log("ADDRESS ERROR:", error);
+  }
+};
+
+
   // UPDATE PROFILE//
   const handleSaveProfile = async () => {
     try {
@@ -103,84 +136,106 @@ function Profile() {
 
       setEditing(false);
 
-      alert("Profile Updated Successfully");
+     toast.success("Profile Updated Successfully");
 
     } catch (error) {
       console.log(error);
     }
   };
+  
+ 
+ // ADD ADDRESS
+const handleAddAddress = async () => {
+  if (
+    !newAddress.fullName ||
+    !newAddress.phone ||
+    !newAddress.house ||
+    !newAddress.city ||
+    !newAddress.state ||
+    !newAddress.pincode
+  ) {
+    toast.error("Please fill required fields");
+    return;
+  }
 
-  // ADD ADDRESS
-  const handleAddAddress = async () => {
-    if (
-      !newAddress.fullName ||
-      !newAddress.phone ||
-      !newAddress.house ||
-      !newAddress.city ||
-      !newAddress.pincode
-    ) {
-      alert("Please fill required fields");
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.log("No token found");
       return;
     }
 
-    try {
-      const updatedUser = {
-        ...user,
-        addresses: [
-          ...(user.addresses || []),
-          {
-            id: Date.now(),
-            ...newAddress,
-          },
-        ],
-      };
+    const addressData = {
+      fullName: newAddress.fullName,
+      phone: newAddress.phone,
+      houseArea: newAddress.house,
+      city: newAddress.city,
+      state: newAddress.state,
+      pincode: newAddress.pincode,
+    };
 
-      await axios.put(
-        `http://localhost:4000/users/${user.id}`,
-        updatedUser
-      );
+  
 
-      setUser(updatedUser);
+    const res = await axios.post(
+      "https://localhost:7150/api/Address",
+      addressData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-      setNewAddress({
-        fullName: "",
-        phone: "",
-        house: "",
-        city: "",
-        state: "",
-        pincode: "",
-      });
 
-      alert("Address Added Successfully");
+    setNewAddress({
+      fullName: "",
+      phone: "",
+      house: "",
+      city: "",
+      state: "",
+      pincode: "",
+    });
 
-    } catch (error) {
-      console.log(error);
+    await fetchAddresses();
+
+    toast.success("Address Added Successfully");
+  } catch (error) {
+
+    toast.error("Failed to add address");
+  }
+};
+
+// DELETE ADDRESS
+const handleDeleteAddress = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.log("No token found");
+      return;
     }
-  };
 
-  // DELETE ADDRESS
-  const handleDeleteAddress = async (id) => {
-    try {
-      const updatedAddresses = user.addresses.filter(
-        (item) => item.id !== id
-      );
+    await axios.delete(
+      `https://localhost:7150/api/Address/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-      const updatedUser = {
-        ...user,
-        addresses: updatedAddresses,
-      };
+    await fetchAddresses();
 
-      await axios.put(
-        `http://localhost:4000/users/${user.id}`,
-        updatedUser
-      );
+    toast.success("Address deleted successfully");
 
-      setUser(updatedUser);
+  } catch (error) {
+    console.log("DELETE ADDRESS ERROR:", error);
+    console.log("BACKEND ERROR:", error.response?.data);
 
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    toast.error("Failed to delete address");
+  }
+};
 
   if (!user) {
     return (
@@ -256,7 +311,8 @@ function Profile() {
             onClick={() => setEditing(!editing)}
             className="bg-black text-white hover:bg-gray-800 px-6 py-3 rounded-xl font-semibold transition"
           >
-            {editing ? "Cancel" : "Edit Profile"}
+            {editing ? 
+            "Cancel" : "Edit Profile"}
           </button>
 
         </div>
@@ -397,9 +453,9 @@ function Profile() {
                   className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 outline-none"
                 />
               ) : (
-                <h3 className="font-semibold text-lg text-black">
-                  {user.dob || "Not Added"}
-                </h3>
+                <h3 className="font-semibold text-black">
+                {user.dob || "Not Added"}
+               </h3>
               )}
             </div>
 
@@ -577,6 +633,6 @@ function Profile() {
       </div>
     </div>
   );
-}
 
+}
 export default Profile;
