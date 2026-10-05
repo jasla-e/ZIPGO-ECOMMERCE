@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 
 import { loginUser } from "../services/authApi";
 import { setUser } from "../utils/auth";
+import { toast } from "react-toastify";
 
 import { useNavigate, Link } from "react-router-dom";
 
@@ -80,7 +81,7 @@ const handleLogin = async (e) => {
 
   } catch (err) {
     console.log("LOGIN ERROR:", err);
-    alert(err.message);
+    toast.error(err.message);
   }
 };
 

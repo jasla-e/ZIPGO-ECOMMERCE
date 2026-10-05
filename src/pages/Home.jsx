@@ -69,11 +69,11 @@ function Home() {
       const searchWords = query ? query.split(" ") : [];
 
       const productText = (
-        (product.title || "") +
+        (product.name || "") +
         " " +
         (product.category || "") +
         " " +
-        (product.details || "")
+        (product.description || "")
       ).toLowerCase();
 
       const matchesSearch =

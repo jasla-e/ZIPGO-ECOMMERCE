@@ -56,19 +56,43 @@ function Navbar() {
   }, [userMenuOpen]);
 
   
-  useEffect(() => {
-    const currentUser = getUser();
-    setUser(currentUser);
+  // useEffect(() => {
+  //   const currentUser = getUser();
+  //   setUser(currentUser);
 
-    if (currentUser?.id) {
-      dispatch(getCart());
-      dispatch(getWishlist());
-    } else {
-      dispatch(clearCart());
-      dispatch(clearWishlist());
-    }
-    setUserMenuOpen(false);
-  }, [location, dispatch]);
+  //   if (currentUser?.id) {
+  //     dispatch(getCart());
+  //     dispatch(getWishlist());
+  //   } else {
+  //     dispatch(clearCart());
+  //     dispatch(clearWishlist());
+  //   }
+  //   setUserMenuOpen(false);
+  // }, [location.pathname, dispatch]);
+
+ useEffect(() => {
+  const currentUser = getUser();
+
+  console.log("USER AFTER REFRESH:", currentUser);
+
+  setUser(currentUser);
+
+ const userId =
+  currentUser?.id ||
+  currentUser?.["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+
+if (userId) {
+  dispatch(getCart());
+  dispatch(getWishlist());
+} else {
+  dispatch(clearCart());
+  dispatch(clearWishlist());
+}
+}, [dispatch]);
+
+useEffect(() => {
+  setUserMenuOpen(false);
+}, [location.pathname]);
 
   // CART CLICKING//
   const handleCartClick = () => {

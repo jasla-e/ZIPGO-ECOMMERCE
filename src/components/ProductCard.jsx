@@ -77,7 +77,7 @@ function ProductCard({ product }) {
 
         <img
           src={product.image}
-          alt={product.title}
+          alt={product.name}
           className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
         />
       </div>
@@ -88,7 +88,7 @@ function ProductCard({ product }) {
         </p>
 
         <h2 className="font-extrabold text-[16px] text-gray-900 line-clamp-1">
-          {product.title}
+          {product.name}
         </h2>
 
         <div className="flex items-center justify-between mt-2">

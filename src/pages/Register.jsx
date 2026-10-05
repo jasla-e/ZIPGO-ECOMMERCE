@@ -5,6 +5,8 @@ import {
   Link,
 } from "react-router-dom";
 
+import { toast } from "react-toastify";
+
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] =
@@ -25,11 +27,11 @@ export default function Register() {
         password,
       });
 
-      alert("Registered successfully");
+      toast.success("Registered successfully");
 
       navigate("/login");
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
   };
 

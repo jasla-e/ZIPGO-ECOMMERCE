@@ -38,10 +38,9 @@ function ProductDetails() {
         "pending_cart_item",
         JSON.stringify({
           id: product.id,
-          title: product.title,
+          title: product.name,
           price: product.price,
           image: product.image,
-          category: product.category,
           stock: product.stock,
           quantity: qty,
         })
@@ -91,7 +90,7 @@ function ProductDetails() {
         <div className="flex justify-center items-center md:w-1/2">
           <img
             src={product.image}
-            alt={product.title}
+            alt={product.name}
             className="w-full max-w-sm object-contain rounded-xl"
           />
         </div>
@@ -100,15 +99,15 @@ function ProductDetails() {
         <div className="md:w-1/2 flex flex-col gap-4">
 
           <p className="text-sm text-gray-400 uppercase tracking-widest">
-            {product.category}
-          </p>
+  Product
+</p>
 
           <h2 className="text-3xl font-bold text-gray-900">
-            {product.title}
+            {product.name}
           </h2>
 
           <p className="text-gray-600">
-            {product.details}
+            {product.description}
           </p>
 
           <h3 className="text-2xl font-bold text-black">

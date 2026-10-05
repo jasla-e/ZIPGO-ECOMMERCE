@@ -1,11 +1,16 @@
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromWishlistAsync } from "../redux/slices/wishlistSlice";
+import {getWishlist, removeFromWishlistAsync } from "../redux/slices/wishlistSlice";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function Wishlist() {
   const items = useSelector((state) => state.wishlist.items);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+  dispatch(getWishlist());
+}, [dispatch]);
 
   const removeItem = (id) => {
     dispatch(removeFromWishlistAsync(id));
@@ -27,15 +32,15 @@ function Wishlist() {
               className="border p-4 rounded-lg shadow"
             >
               <img
-                src={item.image}
+                src={item.product?.image}
                 className="w-full h-40 object-cover"
               />
 
               <h3 className="font-bold mt-2">
-                {item.title}
+                {item.product.name}
               </h3>
 
-              <p>₹{item.price}</p>
+              <p>₹{item.product.price}</p>
 
               <div className="flex gap-2 mt-3">
                 <button

@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:4000/products";
+const BASE_URL = "https://localhost:7150/api/Product";
 
 
 // GET ALL PRODUCTS

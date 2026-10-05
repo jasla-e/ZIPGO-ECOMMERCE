@@ -1,50 +1,67 @@
 import axios from "axios";
 import { getUser } from "../utils/auth";
 
-const BASE_URL = "http://localhost:4000/wishlist";
-
 const getCurrentUser = () => getUser();
 
 // FETCH USER WISHLIST
 export const fetchWishlist = async () => {
-  const user = getCurrentUser();
-  if (!user) return [];
 
-  const res = await axios.get(`${BASE_URL}?userEmail=${user.email}`);
-  return res.data;
+  const token=localStorage.getItem("token");
+   if(!token){
+    return[]
+   }
+
+  const res = await axios.get(
+    "https://localhost:7150/api/Wishlist",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return res.data.wishlistItems || [];
 };
 
 // ADD TO WISHLIST//
 export const addWishlistItem = async (item) => {
-  const user = getCurrentUser();
-  if (!user) throw new Error("Please login");
+  const token = localStorage.getItem("token");
 
-  const res = await axios.get(`${BASE_URL}?userEmail=${user.email}`);
-  const wishlist = res.data;
+  if (!token) {
+    throw new Error("Please login");
+  }
 
-  // CHECK IF ALREADY EXISTS//
-  const existing = wishlist.find(
-    (i) => String(i.productId) === String(item.id)
+  const res = await axios.post(
+    `https://localhost:7150/api/Wishlist/items?productId=${item.id}`,
+    null,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 
-  if (existing) return existing;
-
-  // NEW ITEM//
-  const newItem = {
-    userEmail: user.email,
-    productId: String(item.id),
-    title: item.title,
-    price: item.price,
-    image: item.image,
-    category: item.category,
-    stock: item.stock,
+  return {
+    id: res.data.id,
+    productId: res.data.productId,
+    product: item,
   };
-
-  const resCreate = await axios.post(BASE_URL, newItem);
-  return resCreate.data;
 };
 
 // REMOVE FROM WISHLIST
 export const deleteWishlistItem = async (id) => {
-  await axios.delete(`${BASE_URL}/${id}`);
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Please login");
+  }
+
+  await axios.delete(
+    `https://localhost:7150/api/Wishlist/items/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };
