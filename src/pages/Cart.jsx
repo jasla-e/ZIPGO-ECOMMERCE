@@ -6,6 +6,7 @@ import {
   removeFromCart,
   updateCartAsync,
   getCart,
+  clearCartAsync,
 } from "../redux/slices/cartSlice";
 
 function Cart() {
@@ -59,23 +60,23 @@ function Cart() {
               >
 
                 <img
-                  src={item.image}
-                  alt={item.title}
+                  src={item.product?.image}
+                  alt={item.product?.name}
                   className="w-28 h-28 object-cover rounded-xl"
                 />
 
                 <div className="flex-1">
 
                   <h2 className="font-bold text-lg text-gray-900">
-                    {item.title}
+                    {item.product?.name}
                   </h2>
 
                   <p className="text-sm text-gray-500 mt-1">
-                    {item.category}
+                    {item.product?.maincategory}
                   </p>
 
                   <p className="text-xl font-bold mt-3">
-                    ₹{item.price}
+                    ₹{item.product?.price}
                   </p>
 
 {/* QUANTITY */}
@@ -138,39 +139,58 @@ function Cart() {
                   </button>
 
                   <p className="font-bold text-lg">
-                    ₹{item.price * item.quantity}
+                    ₹{(item.product?.price || 0) * item.quantity}
                   </p>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* ORDER SUMMARY */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-fit sticky top-28">
+{/* RIGHT SIDE */}
+<div className="h-fit sticky top-28">
 
-            <h2 className="text-2xl font-bold text-gray-900">
-              Order Summary
-            </h2>
+  {/* ORDER SUMMARY */}
+  <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
 
-            <div className="flex justify-between mt-6 text-gray-600">
-              <span>Total Items</span>
-              <span>{cartItems.length}</span>
-            </div>
+    <h2 className="text-2xl font-bold text-gray-900">
+      Order Summary
+    </h2>
 
-            <div className="flex justify-between mt-4 text-lg font-bold text-gray-900">
-              <span>Total Price</span>
-              <span>₹{totalPrice}</span>
-            </div>
+    <div className="flex justify-between mt-6 text-gray-600">
+      <span>Total Items</span>
+      <span>{cartItems.length}</span>
+    </div>
 
-{/* CHECKOUT BUTTON */}
-            <button
-              onClick={() => navigate("/checkout")}
-              className="w-full mt-8 bg-black text-white py-4
-                rounded-xl hover:bg-gray-800 transition ">
-              Proceed to Checkout
-            </button>
+    <div className="flex justify-between mt-4 text-lg font-bold text-gray-900">
+      <span>Total Price</span>
+      <span>₹{totalPrice}</span>
+    </div>
 
-          </div>
+    {/* CHECKOUT BUTTON */}
+    <button
+      onClick={() => navigate("/checkout")}
+      className="w-full mt-8 bg-black text-white py-4
+        rounded-xl hover:bg-gray-800 transition"
+    >
+      Proceed to Checkout
+    </button>
+
+  </div>
+
+  {/* CLEAR CART - SEPARATE BOX */}
+  <div className="bg-white rounded-2xl p-4 mt-4 shadow-sm border border-gray-100">
+
+    <button
+      onClick={() => dispatch(clearCartAsync())}
+      className="w-full py-3 text-red-500 font-semibold
+        rounded-xl hover:bg-red-50 transition"
+    >
+      Clear Cart
+    </button>
+
+  </div>
+
+</div>
 
         </div>
       )}

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getUser } from "../utils/auth";
 
-const BASE_URL = "http://localhost:4000/cart";
+const BASE_URL = "https://localhost:7150/api/Cart";
 
 
 const getCurrentUser = () => {
@@ -10,105 +10,131 @@ const getCurrentUser = () => {
 
 
 export const fetchCart = async () => {
-  const user = getCurrentUser();
+  const token = localStorage.getItem("token");
 
-  if (!user) return [];
+  if (!token) {
+    return [];
+  }
 
   const res = await axios.get(
-    `${BASE_URL}?userEmail=${user.email}`
+    BASE_URL,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 
-  return res.data;
+  return res.data.cartItems || [];
 };
 
-
 export const addCartItem = async (item) => {
-  const user = getCurrentUser();
+  const token = localStorage.getItem("token");
 
-  if (!user) {
+  if (!token) {
     throw new Error("Please login");
   }
 
-  const res = await axios.get(
-    `${BASE_URL}?userEmail=${user.email}`
+  await axios.post(
+    `${BASE_URL}/items?productId=${item.id}&quantity=${item.quantity || 1}`,
+    null,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 
-  const cart = res.data;
-
-  const existing = cart.find(
-    (i) =>
-      String(i.productId) === String(item.id)
-  );
-
-  if (existing) {
-    const updated = {
-      ...existing,
-      quantity: Number(existing.quantity) + 1,
-    };
-
-    const resUpdate = await axios.put(
-      `${BASE_URL}/${existing.id}`,
-      updated
-    );
-
-    return resUpdate.data;
-  }
-
-  const newItem = {
-    userEmail: user.email,
-    productId: String(item.id),
-    title: item.title,
-    price: item.price,
-    image: item.image,
-    category: item.category,
-    stock: item.stock,
-    quantity: 1,
-  };
-
-  const resCreate = await axios.post(
+  // Get the updated cart from backend
+  const cartResponse = await axios.get(
     BASE_URL,
-    newItem
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 
-  return resCreate.data;
-};
+  const cartItems = cartResponse.data.cartItems || [];
 
+  // Find the product we just added
+  const updatedItem = cartItems.find(
+    (cartItem) =>
+      String(cartItem.productId) === String(item.id)
+  );
+
+  return updatedItem;
+};
 
 export const deleteCartItem = async (id) => {
-  await axios.delete(`${BASE_URL}/${id}`);
-};
+  const token = localStorage.getItem("token");
 
-export const updateCartItem = async (
-  id,
-  updatedItem
-) => {
-  const res = await axios.put(
-    `${BASE_URL}/${id}`,
-    updatedItem
+  if (!token) {
+    throw new Error("Please login");
+  }
+
+  await axios.delete(
+    `${BASE_URL}/items/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
 
-  return res.data;
+  return true;
 };
 
+
+export const updateCartItem = async (id, updatedItem) => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    throw new Error("Please login");
+  }
+
+  await axios.put(
+    `${BASE_URL}/items/${id}?quantity=${updatedItem.quantity}`,
+    null,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  // Get the updated cart
+  const cartResponse = await axios.get(
+    BASE_URL,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const cartItems = cartResponse.data.cartItems || [];
+
+  // Find the updated item
+  const updatedCartItem = cartItems.find(
+    (item) => item.id === id
+  );
+
+  return updatedCartItem;
+};
 
 export const clearCartApi = async () => {
-  const user = getCurrentUser();
+  const token = localStorage.getItem("token");
 
-  if (!user) return;
+  if (!token) {
+    throw new Error("Please login");
+  }
 
-  // get all user cart items//
-  const res = await axios.get(
-    `${BASE_URL}?userEmail=${user.email}`
-  );
-
-  const items = res.data;
-
-  // delete all items for that user//
-  await Promise.all(
-    items.map((item) =>
-      axios.delete(`${BASE_URL}/${item.id}`)
-    )
-  );
+  await axios.delete(BASE_URL, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   return true;
 };

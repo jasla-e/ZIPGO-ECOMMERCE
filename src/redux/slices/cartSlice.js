@@ -56,7 +56,7 @@ const calculateTotal = (items) =>
   items.reduce((acc, item) => {
     return (
       acc +
-      (Number(item.price) || 0) *
+      (Number(item.product?.price) || 0) *
         (Number(item.quantity) || 0)
     );
   }, 0);

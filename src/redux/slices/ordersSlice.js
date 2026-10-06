@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API = "http://localhost:4000/orders";
+const API = "https://localhost:7150/api/Order";
 
 // ALL ORDERS — Admin//
 export const fetchAllOrdersAsync = createAsyncThunk(
@@ -16,22 +16,45 @@ export const fetchAllOrdersAsync = createAsyncThunk(
 export const fetchOrdersAsync = createAsyncThunk(
   "orders/fetchOrders",
   async () => {
-    const user = JSON.parse(localStorage.getItem("auth_user"));
-    const res = await axios.get(`${API}?userId=${user.id}`);
-    return res.data.reverse();
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("Please login");
+    }
+
+    const res = await axios.get(API, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return res.data;
   }
 );
 
 // PLACE ORDER
 export const placeOrderAsync = createAsyncThunk(
   "orders/placeOrder",
-  async (orderData) => {
-    const user = JSON.parse(localStorage.getItem("auth_user"));
-    const res = await axios.post(API, {
-      ...orderData,
-      userId: user.id,
-      status: "pending",
-    });
+  async ({ addressId, paymentMethod }) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      throw new Error("Please login");
+    }
+
+    const res = await axios.post(
+      "https://localhost:7150/api/Order",
+      {
+        addressId,
+        paymentMethod,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
     return res.data;
   }
 );

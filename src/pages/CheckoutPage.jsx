@@ -31,9 +31,12 @@ function CheckoutPage() {
     useState("COD");
 
   const totalAmount = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+  (total, item) =>
+    total +
+    (Number(item.product?.price) || 0) *
+      (Number(item.quantity) || 0),
+  0
+);
 
   useEffect(() => {
     fetchUser();
@@ -63,11 +66,9 @@ function CheckoutPage() {
 
     const addresses = await response.json();
 
-    const userData = {
+    setUser({
       addresses: addresses || [],
-    };
-
-    setUser(userData);
+    });
 
     // AUTO FILL FIRST ADDRESS
     if (addresses.length > 0) {
@@ -85,7 +86,7 @@ function CheckoutPage() {
   } catch (error) {
     console.log("CHECKOUT ADDRESS ERROR:", error);
   }
-  };
+};
 
   const handlePlaceOrder = async () => {
     if (
@@ -128,7 +129,10 @@ function CheckoutPage() {
     try {
       if (paymentMethod === "COD") {
         const result = await dispatch(
-          placeOrderAsync(newOrder)
+        placeOrderAsync({
+        addressId: selectedAddressId,
+        paymentMethod,
+        })
         ).unwrap();
 
         if (result) {
@@ -196,7 +200,7 @@ function CheckoutPage() {
 
                         setFullName(address.fullName || "");
                         setPhone(address.phone || "");
-                        setHouse(address.house || "");
+                        setHouse(address.houseArea || "");
                         setCity(address.city || "");
                         setPincode(address.pincode || "");
                       }}
@@ -225,7 +229,7 @@ function CheckoutPage() {
                           </h4>
 
                           <p className="text-sm text-gray-500 mt-1">
-                            {address.house}
+                            {address.houseArea}
                           </p>
 
                           <p className="text-sm text-gray-500">
@@ -396,11 +400,11 @@ function CheckoutPage() {
                   className="flex justify-between text-sm"
                 >
                   <span>
-                    {item.title} × {item.quantity}
+                    {item.product?.name} × {item.quantity}
                   </span>
 
                   <span>
-                    ₹{item.price * item.quantity}
+                    ₹{item.product?.price * item.quantity}
                   </span>
                 </div>
               ))}
