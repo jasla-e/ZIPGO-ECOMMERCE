@@ -14,6 +14,38 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+// FILTER PRODUCTS//
+export const fetchFilteredProducts = createAsyncThunk(
+  "products/fetchFilteredProducts",
+  async (filters) => {
+    const res = await axios.get(`${BASE_URL}/filter`, {
+      params: filters,
+    });
+
+    return res.data;
+  }
+);
+
+// ADMIN PRODUCTS - SEARCH + PAGINATION
+export const fetchAdminProducts = createAsyncThunk(
+  "products/fetchAdminProducts",
+  async ({ search = "", page = 1, pageSize = 4 }) => {
+    const token = localStorage.getItem("token");
+
+    const res = await axios.get(`${BASE_URL}/admin`, {
+      params: {
+        search,
+        page,
+        pageSize,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return res.data;
+  }
+);
 
 // ADD PRODUCT//
 export const addProduct = createAsyncThunk(
@@ -83,20 +115,30 @@ export const updateProduct = createAsyncThunk(
 const productSlice = createSlice({
   name: "products",
 
-  initialState: {
-    items: [],
-    loading: false,
-    error: null,
-    searchQuery: "",
-     selectedProduct: null,
+ initialState: {
+  items: [],
+  loading: false,
+  error: null,
+  searchQuery: "",
+  selectedProduct: null,
+
+  totalCount: 0,
+  currentPage: 1,
+  pageSize: 4,
+  totalPages: 0,
+},
+
+reducers: {
+
+  setSearchQuery: (state, action) => {
+    state.searchQuery = action.payload;
   },
 
-  reducers: {
+  setCurrentPage: (state, action) => {
+    state.currentPage = action.payload;
+  },
 
-    setSearchQuery: (state, action) => {
-      state.searchQuery = action.payload;
-    },
-     setSelectedProduct: (state, action) => {
+  setSelectedProduct: (state, action) => {
     state.selectedProduct = action.payload;
   },
 
@@ -104,7 +146,7 @@ const productSlice = createSlice({
     state.selectedProduct = null;
   },
 
-  },
+},
 
   extraReducers: (builder) => {
 
@@ -126,6 +168,42 @@ const productSlice = createSlice({
         state.error = action.error.message;
       })
 
+// FILTER PRODUCTS//
+.addCase(fetchFilteredProducts.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+})
+
+.addCase(fetchFilteredProducts.fulfilled, (state, action) => {
+  state.loading = false;
+  state.items = action.payload;
+})
+
+.addCase(fetchFilteredProducts.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.error.message;
+})
+
+// ADMIN PRODUCTS - SEARCH + PAGINATION
+.addCase(fetchAdminProducts.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+})
+
+.addCase(fetchAdminProducts.fulfilled, (state, action) => {
+  state.loading = false;
+
+  state.items = action.payload.products;
+  state.totalCount = action.payload.totalCount;
+  state.currentPage = action.payload.page;
+  state.pageSize = action.payload.pageSize;
+  state.totalPages = action.payload.totalPages;
+})
+
+.addCase(fetchAdminProducts.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.error.message;
+})
 
       // ADD PRODUCT//
       .addCase(addProduct.pending, (state) => {
@@ -188,7 +266,7 @@ const productSlice = createSlice({
 });
 
 
-export const { setSearchQuery,setSelectedProduct,
+export const { setSearchQuery,setCurrentPage,setSelectedProduct,
   clearSelectedProduct, } = productSlice.actions;
 
 export default productSlice.reducer;

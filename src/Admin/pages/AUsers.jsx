@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
   fetchUsersAsync,
+  searchUsersAsync,
   toggleUserBlockAsync,
 } from "../../redux/slices/usersSlice";
 
@@ -13,13 +14,23 @@ function AUsers() {
 
   const [search, setSearch] = useState("");
 
+  // Fetch all users when page loads
   useEffect(() => {
     dispatch(fetchUsersAsync());
   }, [dispatch]);
 
-  const filteredUsers = users.filter((user) =>
-    user.name?.toLowerCase().includes(search.toLowerCase())
-  );
+  // Search users from backend
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (search.trim() === "") {
+        dispatch(fetchUsersAsync());
+      } else {
+        dispatch(searchUsersAsync(search));
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [dispatch, search]);
 
   return (
     <div className="p-6">
@@ -27,7 +38,7 @@ function AUsers() {
         User Management
       </h1>
 
-      
+      {/* Search */}
       <div className="mb-4">
         <input
           type="text"
@@ -38,7 +49,7 @@ function AUsers() {
         />
       </div>
 
-     
+      {/* Users */}
       {loading ? (
         <h2 className="text-lg font-medium">
           Loading Users...
@@ -60,7 +71,7 @@ function AUsers() {
             </thead>
 
             <tbody>
-              {filteredUsers.map((user) => (
+              {users.map((user) => (
                 <tr
                   key={user.id}
                   className="border-t"
@@ -94,7 +105,7 @@ function AUsers() {
                   </td>
 
                   <td className="px-4 py-3 text-center">
-                    {user.role === "admin" ? (
+                    {user.role?.toLowerCase() === "admin" ? (
                       <span className="text-gray-500 font-medium">
                         Admin
                       </span>
@@ -118,7 +129,7 @@ function AUsers() {
                 </tr>
               ))}
 
-              {filteredUsers.length === 0 && (
+              {users.length === 0 && (
                 <tr>
                   <td
                     colSpan="6"

@@ -146,15 +146,29 @@ function CheckoutPage() {
         return;
       }
 
-      if (paymentMethod === "UPI") {
-        localStorage.setItem(
-          "tempOrder",
-          JSON.stringify(newOrder)
-        );
+    if (paymentMethod === "UPI") {
+    const result = await dispatch(
+  placeOrderAsync({
+    addressId: selectedAddressId,
+    paymentMethod: "UPI",
+  })
+).unwrap();
 
-        navigate("/payment");
-      }
+console.log("UPI ORDER RESPONSE:", result);
 
+localStorage.setItem(
+  "razorpayOrder",
+  JSON.stringify({
+    ...result,
+    address: {
+      fullName,
+      phone,
+    },
+  })
+);
+
+navigate("/payment");
+   }
     } catch (error) {
       console.log(error);
       toast.error("Order failed");

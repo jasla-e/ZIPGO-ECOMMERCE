@@ -1,75 +1,103 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-
-import { clearCart } from "../redux/slices/cartSlice";
-import { placeOrderAsync } from "../redux/slices/ordersSlice";
+import axios from "axios";
+import { clearCartAsync } from "../redux/slices/cartSlice";
 
 function Payment() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = useState(true);
-
-  const tempOrder = JSON.parse(localStorage.getItem("tempOrder"));
+  const razorpayOrder = JSON.parse(
+    localStorage.getItem("razorpayOrder")
+  );
 
   useEffect(() => {
-    if (!tempOrder) {
+    if (!razorpayOrder) {
       navigate("/checkout");
       return;
     }
 
-    
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       openRazorpay();
     }, 300);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const openRazorpay = () => {
     const options = {
-      key: "rzp_test_Srudb8fRWQmJH5",
-      amount: tempOrder.totalAmount * 100,
+      key: razorpayOrder.razorpayKeyId,
+
+      amount:
+        razorpayOrder.order.totalAmount * 100,
+
       currency: "INR",
-      name: "My E-Commerce Store",
-      description: "Order Payment",
+
+      name: "ZIPGO",
+
+      description: `Order #${razorpayOrder.order.id}`,
+
+      order_id:
+        razorpayOrder.razorpayOrderId,
 
       handler: async function (response) {
-        await dispatch(
-          placeOrderAsync({
-            ...tempOrder,
-            paymentMethod: "RAZORPAY",
-            paymentId: response.razorpay_payment_id,
-            orderId: response.razorpay_order_id,
-            createdAt: new Date(),
-          })
-        );
+  try {
+    console.log(
+      "Razorpay Payment Success:",
+      response
+    );
 
-        dispatch(clearCart());
-        localStorage.removeItem("tempOrder");
+    const token = localStorage.getItem("token");
 
-        navigate("/orders");
-      },
+    const verifyData = {
+      orderId: razorpayOrder.order.id,
+      razorpayOrderId: response.razorpay_order_id,
+      razorpayPaymentId: response.razorpay_payment_id,
+      razorpaySignature: response.razorpay_signature,
+    };
 
+    console.log("VERIFY DATA:", verifyData);
+
+    await axios.post(
+      "https://localhost:7150/api/Payment/verify",
+      verifyData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    console.log("Payment verified successfully");
+
+    localStorage.removeItem("razorpayOrder");
+
+    navigate("/orders");
+  } catch (error) {
+    console.log("PAYMENT VERIFY ERROR:", error);
+    console.log("BACKEND ERROR:", error.response?.data);
+  }
+},
       prefill: {
-        name: tempOrder.address.fullName,
-        contact: tempOrder.address.phone,
+        name: razorpayOrder.address?.fullName || "",
+        contact: razorpayOrder.address?.phone || "",
       },
 
       theme: {
-        color: "#000",
+        color: "#000000",
       },
 
       modal: {
         ondismiss: function () {
-          navigate("/checkout"); // if user closes popup
+          navigate("/checkout");
         },
       },
     };
 
     const rzp = new window.Razorpay(options);
-    rzp.open();
 
-    setLoading(false);
+    rzp.open();
   };
 
   return (

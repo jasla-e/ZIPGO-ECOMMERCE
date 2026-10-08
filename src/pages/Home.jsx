@@ -6,7 +6,7 @@ import CategoryBar from "../components/CategoryBar";
 import ProductCard from "../components/ProductCard";
 
 
-import { fetchProducts, setSearchQuery } from "../redux/slices/productSlice";
+import { fetchProducts,fetchFilteredProducts, setSearchQuery } from "../redux/slices/productSlice";
 
 function Home() {
   const dispatch = useDispatch();

@@ -1,23 +1,45 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { fetchProducts } from "../../redux/slices/productSlice";
+import {
+  fetchAdminProducts,
+  setSearchQuery,
+} from "../../redux/slices/productSlice";
+
 import ProductTable from "../components/ProductTable";
 
 function AProducts() {
   const dispatch = useDispatch();
 
-  const { items, loading, searchQuery } = useSelector(
-    (state) => state.products
-  );
+  const {
+    items,
+    loading,
+    searchQuery,
+    currentPage,
+    pageSize,
+  } = useSelector((state) => state.products);
 
-  //  PAGINATION STATE//
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
+  const [searchInput, setSearchInput] = useState(searchQuery);
 
+  // SEARCH WITH DEBOUNCE
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    const timer = setTimeout(() => {
+      dispatch(setSearchQuery(searchInput));
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchInput, dispatch]);
+
+  // FETCH ADMIN PRODUCTS
+  useEffect(() => {
+    dispatch(
+      fetchAdminProducts({
+        search: searchQuery,
+        page: currentPage,
+        pageSize: pageSize,
+      })
+    );
+  }, [dispatch, searchQuery, currentPage, pageSize]);
 
   return (
     <div>
@@ -26,10 +48,9 @@ function AProducts() {
       ) : (
         <ProductTable
           products={items}
-          searchQuery={searchQuery}
+          searchQuery={searchInput}
+          setSearchQuery={setSearchInput}
           currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          itemsPerPage={itemsPerPage}
         />
       )}
     </div>
