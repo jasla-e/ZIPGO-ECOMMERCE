@@ -21,15 +21,15 @@ const [formData, setFormData] = useState({
  useEffect(() => {
   if (product) {
     setFormData({
-      name: product.name || "",
-      description: product.description || "",
-      price: product.price || "",
-      mainCategoryId: product.mainCategoryId || "",
-      subCategoryId: product.subCategoryId || "",
-      stock: product.stock || "",
-      rating: product.rating || "",
-      offer: product.offer || false,
-      image: product.image || "",
+       name: product.name ?? "",
+  description: product.description ?? "",
+  price: product.price ?? "",
+  mainCategoryId: product.mainCategoryId ?? "",
+  subCategoryId: product.subCategoryId ?? "",
+  stock: product.stock ?? "",
+  rating: product.rating ?? "",
+  offer: product.offer ?? false,
+  image: product.image ?? "",
     });
   }
 }, [product]);
