@@ -68,12 +68,17 @@ function Payment() {
         },
       }
     );
-
     console.log("Payment verified successfully");
 
-    localStorage.removeItem("razorpayOrder");
+// Clear cart in Redux and backend
+await dispatch(clearCartAsync()).unwrap();
 
-    navigate("/orders");
+console.log("Cart cleared successfully");
+
+localStorage.removeItem("razorpayOrder");
+
+navigate("/orders");
+   
   } catch (error) {
     console.log("PAYMENT VERIFY ERROR:", error);
     console.log("BACKEND ERROR:", error.response?.data);

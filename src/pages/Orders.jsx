@@ -12,6 +12,10 @@ function Orders() {
   useEffect(() => {
     dispatch(fetchOrdersAsync());
   }, [dispatch]);
+  
+  const sortedOrders = [...orders].sort(
+  (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
+);
 
   const formatDate = (date) =>
     new Date(date).toLocaleString("en-IN", {
@@ -63,7 +67,7 @@ function Orders() {
       ) : (
         <div className="space-y-4">
 
-          {orders.map((order) => (
+          {sortedOrders.map((order) => (
             <div
               key={order.id}
               className="bg-white rounded-xl border p-4 shadow-sm"

@@ -55,20 +55,7 @@ function Navbar() {
     };
   }, [userMenuOpen]);
 
-  
-  // useEffect(() => {
-  //   const currentUser = getUser();
-  //   setUser(currentUser);
 
-  //   if (currentUser?.id) {
-  //     dispatch(getCart());
-  //     dispatch(getWishlist());
-  //   } else {
-  //     dispatch(clearCart());
-  //     dispatch(clearWishlist());
-  //   }
-  //   setUserMenuOpen(false);
-  // }, [location.pathname, dispatch]);
 
  useEffect(() => {
   const currentUser = getUser();

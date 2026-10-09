@@ -136,11 +136,11 @@ function CheckoutPage() {
         ).unwrap();
 
         if (result) {
-          await dispatch(clearCartAsync());
+        await dispatch(clearCartAsync()).unwrap();
+ 
+        toast.success("Order placed successfully..");
 
-          toast.success("Order placed successfully..");
-
-          navigate("/orders");
+        navigate("/orders");
         }
 
         return;

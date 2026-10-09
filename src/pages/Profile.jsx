@@ -26,9 +26,13 @@ function Profile() {
 
   // FETCH USER//
   useEffect(() => {
-    fetchUser(),
-    fetchAddresses();
-  }, []);
+  const loadProfile = async () => {
+    await fetchUser();
+    await fetchAddresses();
+  };
+
+  loadProfile();
+}, []);
    const fetchUser = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -71,6 +75,7 @@ function Profile() {
 };
  
 // FETCH ADDRESSES
+// FETCH ADDRESSES
 const fetchAddresses = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -89,16 +94,23 @@ const fetchAddresses = async () => {
       }
     );
 
+    console.log("FETCHED ADDRESSES:", res.data);
 
-    setUser((prev) => ({
-      ...prev,
-      addresses: res.data,
-    }));
+    setUser((prev) => {
+      if (!prev) return prev;
+
+      return {
+        ...prev,
+        addresses: res.data || [],
+      };
+    });
   } catch (error) {
-    console.log("ADDRESS ERROR:", error);
+    console.log(
+      "ADDRESS ERROR:",
+      error.response?.data || error.message
+    );
   }
 };
-
 
   // UPDATE PROFILE//
   const handleSaveProfile = async () => {
@@ -498,7 +510,7 @@ const handleDeleteAddress = async (id) => {
                   </h3>
 
                   <p className="text-gray-500 mt-2">
-                    {address.house}
+                    {address.houseArea}
                   </p>
 
                   <p className="text-gray-500">

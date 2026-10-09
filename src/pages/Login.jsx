@@ -34,6 +34,7 @@ const handleLogin = async (e) => {
 
     setUser(user);
     localStorage.setItem("user", JSON.stringify(user));
+    toast.success("Login successful!");
 
     {/* cart restore */}
     const pendingCartItem = JSON.parse(
