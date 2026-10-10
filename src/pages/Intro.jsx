@@ -55,21 +55,26 @@ function Intro() {
     return () => clearInterval(interval);
   }, [images.length]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("http://localhost:4000/products");
-        const data = await res.json();
-        setProducts(data);
-      } catch (err) {
-        console.log("Error fetching products:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+   useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("https://localhost:7150/api/Product");
 
-    fetchProducts();
-  }, []);
+      if (!res.ok) {
+        throw new Error(`Failed to fetch products: ${res.status}`);
+      }
+
+      const data = await res.json();
+      setProducts(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, []);
 
   const topRatedProducts = products.filter(
     (p) => Number(p.rating) > 4.7
