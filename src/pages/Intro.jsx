@@ -58,7 +58,9 @@ function Intro() {
    useEffect(() => {
   const fetchProducts = async () => {
     try {
-      const res = await fetch("https://localhost:7150/api/Product");
+      const res = await fetch(
+  "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Product"
+);
 
       if (!res.ok) {
         throw new Error(`Failed to fetch products: ${res.status}`);

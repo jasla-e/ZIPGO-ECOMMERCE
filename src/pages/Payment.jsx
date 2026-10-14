@@ -60,7 +60,7 @@ function Payment() {
     console.log("VERIFY DATA:", verifyData);
 
     await axios.post(
-      "https://localhost:7150/api/Payment/verify",
+      "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Payment/verify",
       verifyData,
       {
         headers: {

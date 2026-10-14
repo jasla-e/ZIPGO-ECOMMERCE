@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getUser } from "../utils/auth";
 
-const BASE_URL = "https://localhost:7150/api/Cart";
+const BASE_URL = "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Cart";
 
 
 const getCurrentUser = () => {

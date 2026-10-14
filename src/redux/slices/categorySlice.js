@@ -2,10 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const MAIN_CATEGORY_API =
-  "https://localhost:7150/api/MainCategory";
+  "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/MainCategory";
 
 const SUB_CATEGORY_API =
-  "https://localhost:7150/api/SubCategory";
+  "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/SubCategory";
 
 // Fetch all main categories
 export const fetchMainCategoriesAsync = createAsyncThunk(

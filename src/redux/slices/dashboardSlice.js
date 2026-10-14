@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API = "https://localhost:7150/api/AdminDashboard";
+const API = "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/AdminDashboard";
 
 // Fetch complete dashboard data
 export const fetchDashboardAsync = createAsyncThunk(

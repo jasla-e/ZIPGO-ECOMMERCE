@@ -52,7 +52,7 @@ function CheckoutPage() {
     }
 
     const response = await fetch(
-      "https://localhost:7150/api/Address",
+      "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Address",
       {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -43,7 +43,7 @@ function Profile() {
     }
 
     const res = await axios.get(
-      "https://localhost:7150/api/User/profile",
+      "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/User/profile",
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -74,7 +74,7 @@ function Profile() {
   }
 };
  
-// FETCH ADDRESSES
+
 // FETCH ADDRESSES
 const fetchAddresses = async () => {
   try {
@@ -86,7 +86,7 @@ const fetchAddresses = async () => {
     }
 
     const res = await axios.get(
-      "https://localhost:7150/api/Address",
+      "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Address",
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -130,7 +130,7 @@ const fetchAddresses = async () => {
 
 
       await axios.put(
-        `https://localhost:7150/api/User/profile`,
+        `http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/User/profile`,
         updatedUser,
         {
           headers:{
@@ -190,14 +190,14 @@ const handleAddAddress = async () => {
   
 
     const res = await axios.post(
-      "https://localhost:7150/api/Address",
-      addressData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+  "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Address",
+  addressData,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
 
 
     setNewAddress({
@@ -229,7 +229,7 @@ const handleDeleteAddress = async (id) => {
     }
 
     await axios.delete(
-      `https://localhost:7150/api/Address/${id}`,
+      `http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Address/${id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

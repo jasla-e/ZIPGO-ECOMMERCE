@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API = "https://localhost:7150/api/Order";
-const ADMIN_API = "https://localhost:7150/api/AdminOrder";
+const API = "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Order";
+const ADMIN_API = "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/AdminOrder";
 
 
 // GET ALL ORDERS — ADMIN

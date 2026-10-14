@@ -1,29 +1,29 @@
+
 import axios from "axios";
 import { getUser } from "../utils/auth";
+
+const BASE_URL = "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Wishlist";
 
 const getCurrentUser = () => getUser();
 
 // FETCH USER WISHLIST
 export const fetchWishlist = async () => {
+  const token = localStorage.getItem("token");
 
-  const token=localStorage.getItem("token");
-   if(!token){
-    return[]
-   }
+  if (!token) {
+    return [];
+  }
 
-  const res = await axios.get(
-    "https://localhost:7150/api/Wishlist",
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const res = await axios.get(BASE_URL, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   return res.data.wishlistItems || [];
 };
 
-// ADD TO WISHLIST//
+// ADD TO WISHLIST
 export const addWishlistItem = async (item) => {
   const token = localStorage.getItem("token");
 
@@ -32,7 +32,7 @@ export const addWishlistItem = async (item) => {
   }
 
   const res = await axios.post(
-    `https://localhost:7150/api/Wishlist/items?productId=${item.id}`,
+    `${BASE_URL}/items?productId=${item.id}`,
     null,
     {
       headers: {
@@ -56,12 +56,10 @@ export const deleteWishlistItem = async (id) => {
     throw new Error("Please login");
   }
 
-  await axios.delete(
-    `https://localhost:7150/api/Wishlist/items/${id}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  await axios.delete(`${BASE_URL}/items/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
+

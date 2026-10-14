@@ -1,4 +1,4 @@
-const BASE_URL = "https://localhost:7150/api/Product";
+const BASE_URL = "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Product";
 
 
 // GET ALL PRODUCTS

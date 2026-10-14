@@ -72,7 +72,9 @@ function AOrders() {
     const cleanImage = image.replace(/^\/+/, "");
 
     // Backend image URL
-    return `https://localhost:7150/${cleanImage}`;
+   
+return `http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/${cleanImage}`;
+;
   };
 
   // STATUS FLOW
