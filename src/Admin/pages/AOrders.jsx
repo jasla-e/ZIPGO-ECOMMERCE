@@ -73,7 +73,8 @@ function AOrders() {
 
     // Backend image URL
    
-return `http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/${cleanImage}`;
+return `https://d3gliasorrrnwn.cloudfront.net
+/${cleanImage}`;
 ;
   };
 

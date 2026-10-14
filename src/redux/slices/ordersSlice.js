@@ -1,14 +1,11 @@
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API = "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Order";
-const ADMIN_API = "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/AdminOrder";
-
+const API = "https://d3gliasorrrnwn.cloudfront.net/api/Order";
+const ADMIN_API = "https://d3gliasorrrnwn.cloudfront.net/api/AdminOrder";
 
 // GET ALL ORDERS — ADMIN
-// GET /api/AdminOrder
-
-
 export const fetchAllOrdersAsync = createAsyncThunk(
   "orders/fetchAllOrders",
   async (_, { rejectWithValue }) => {
@@ -25,23 +22,18 @@ export const fetchAllOrdersAsync = createAsyncThunk(
         },
       });
 
-      // Latest orders first
       return [...res.data].reverse();
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message ||
-        error.response?.data ||
-        "Failed to fetch orders"
+          error.response?.data ||
+          "Failed to fetch orders"
       );
     }
   }
 );
 
-
-
 // SEARCH / FILTER ORDERS — ADMIN
-// GET /api/AdminOrder/search
-
 export const searchOrdersAsync = createAsyncThunk(
   "orders/searchOrders",
   async ({ search = "", status = "" }, { rejectWithValue }) => {
@@ -52,41 +44,33 @@ export const searchOrdersAsync = createAsyncThunk(
         return rejectWithValue("Please login");
       }
 
-      // Backend uses PascalCase status values
       const backendStatus =
         status === ""
           ? ""
           : status.charAt(0).toUpperCase() + status.slice(1);
 
-      const res = await axios.get(
-        `${ADMIN_API}/search`,
-        {
-          params: {
-            search,
-            status: backendStatus,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await axios.get(`${ADMIN_API}/search`, {
+        params: {
+          search,
+          status: backendStatus,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       return [...res.data].reverse();
-
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message ||
-        error.response?.data ||
-        "Failed to search orders"
+          error.response?.data ||
+          "Failed to search orders"
       );
     }
   }
 );
 
 // GET USER ORDERS
-// GET /api/Order
-
-
 export const fetchOrdersAsync = createAsyncThunk(
   "orders/fetchOrders",
   async (_, { rejectWithValue }) => {
@@ -104,28 +88,20 @@ export const fetchOrdersAsync = createAsyncThunk(
       });
 
       return res.data;
-
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message ||
-        error.response?.data ||
-        "Failed to fetch orders"
+          error.response?.data ||
+          "Failed to fetch orders"
       );
     }
   }
 );
 
-
-
-// POST /api/Order
-
-
+// PLACE ORDER
 export const placeOrderAsync = createAsyncThunk(
   "orders/placeOrder",
-  async (
-    { addressId, paymentMethod },
-    { rejectWithValue }
-  ) => {
+  async ({ addressId, paymentMethod }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
 
@@ -147,22 +123,17 @@ export const placeOrderAsync = createAsyncThunk(
       );
 
       return res.data;
-
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message ||
-        error.response?.data ||
-        "Failed to place order"
+          error.response?.data ||
+          "Failed to place order"
       );
     }
   }
 );
 
-
-
 // UPDATE ORDER STATUS — ADMIN
-// PUT /api/AdminOrder/{id}/status
-
 export const updateOrderStatusAsync = createAsyncThunk(
   "orders/updateStatus",
   async ({ id, data }, { rejectWithValue }) => {
@@ -200,15 +171,14 @@ export const updateOrderStatusAsync = createAsyncThunk(
 
       return rejectWithValue(
         error.response?.data?.message ||
-        error.response?.data ||
-        "Failed to update order status"
+          error.response?.data ||
+          "Failed to update order status"
       );
     }
   }
 );
 
 // SLICE
-
 const ordersSlice = createSlice({
   name: "orders",
 
@@ -221,89 +191,62 @@ const ordersSlice = createSlice({
   reducers: {},
 
   extraReducers: (builder) => {
-
-    
     // ADMIN — FETCH ALL ORDERS
-   
-
     builder
       .addCase(fetchAllOrdersAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-
       .addCase(fetchAllOrdersAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.orders = action.payload;
       })
-
       .addCase(fetchAllOrdersAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });
 
-
-    
     // ADMIN — SEARCH ORDERS
-    
     builder
       .addCase(searchOrdersAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-
       .addCase(searchOrdersAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.orders = action.payload;
       })
-
       .addCase(searchOrdersAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });
 
-
-   
     // USER — FETCH ORDERS
-  
-
     builder
       .addCase(fetchOrdersAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-
       .addCase(fetchOrdersAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.orders = action.payload;
       })
-
       .addCase(fetchOrdersAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || action.error.message;
       });
 
-
-   
     // PLACE ORDER
-  
-
-    builder
-      .addCase(placeOrderAsync.fulfilled, (state, action) => {
-        state.orders.unshift(action.payload);
-      });
-
+    builder.addCase(placeOrderAsync.fulfilled, (state, action) => {
+      state.orders.unshift(action.payload);
+    });
 
     // UPDATE ORDER STATUS
-
-
     builder
       .addCase(updateOrderStatusAsync.pending, (state) => {
         state.error = null;
       })
-
       .addCase(updateOrderStatusAsync.fulfilled, (state, action) => {
-
         const index = state.orders.findIndex(
           (order) => order.id === action.payload.id
         );
@@ -315,12 +258,11 @@ const ordersSlice = createSlice({
           };
         }
       })
-
       .addCase(updateOrderStatusAsync.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
       });
-
   },
 });
 
 export default ordersSlice.reducer;
+

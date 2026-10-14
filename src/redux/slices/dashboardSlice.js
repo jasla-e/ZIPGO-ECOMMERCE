@@ -1,7 +1,8 @@
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API = "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/AdminDashboard";
+const API = "https://d3gliasorrrnwn.cloudfront.net/api/AdminDashboard";
 
 // Fetch complete dashboard data
 export const fetchDashboardAsync = createAsyncThunk(
@@ -51,10 +52,8 @@ export const fetchTopProductsAsync = createAsyncThunk(
 const initialState = {
   data: null,
   topProducts: [],
-
   loading: false,
   topProductsLoading: false,
-
   error: null,
   topProductsError: null,
 };
@@ -62,9 +61,7 @@ const initialState = {
 const dashboardSlice = createSlice({
   name: "dashboard",
   initialState,
-
   reducers: {},
-
   extraReducers: (builder) => {
     // Dashboard
     builder
@@ -72,15 +69,11 @@ const dashboardSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-
       .addCase(fetchDashboardAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
-
-        // Initial top products come from dashboard API
         state.topProducts = action.payload.topProducts || [];
       })
-
       .addCase(fetchDashboardAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -92,12 +85,10 @@ const dashboardSlice = createSlice({
         state.topProductsLoading = true;
         state.topProductsError = null;
       })
-
       .addCase(fetchTopProductsAsync.fulfilled, (state, action) => {
         state.topProductsLoading = false;
         state.topProducts = action.payload;
       })
-
       .addCase(fetchTopProductsAsync.rejected, (state, action) => {
         state.topProductsLoading = false;
         state.topProductsError = action.payload;
@@ -106,3 +97,4 @@ const dashboardSlice = createSlice({
 });
 
 export default dashboardSlice.reducer;
+

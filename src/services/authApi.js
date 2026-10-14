@@ -1,5 +1,5 @@
 
-const API_URL = "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Auth";
+const API_URL = "https://d3gliasorrrnwn.cloudfront.net/api/Auth";
 
 
 // REGISTER USER

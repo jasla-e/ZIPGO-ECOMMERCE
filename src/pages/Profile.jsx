@@ -43,7 +43,7 @@ function Profile() {
     }
 
     const res = await axios.get(
-      "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/User/profile",
+      "https://d3gliasorrrnwn.cloudfront.net/api/User/profile",
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -86,7 +86,7 @@ const fetchAddresses = async () => {
     }
 
     const res = await axios.get(
-      "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Address",
+      "https://d3gliasorrrnwn.cloudfront.net/api/Address",
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -130,7 +130,8 @@ const fetchAddresses = async () => {
 
 
       await axios.put(
-        `http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/User/profile`,
+        `https://d3gliasorrrnwn.cloudfront.net
+/api/User/profile`,
         updatedUser,
         {
           headers:{
@@ -190,7 +191,7 @@ const handleAddAddress = async () => {
   
 
     const res = await axios.post(
-  "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Address",
+  "https://d3gliasorrrnwn.cloudfront.net/api/Address",
   addressData,
   {
     headers: {
@@ -229,7 +230,7 @@ const handleDeleteAddress = async (id) => {
     }
 
     await axios.delete(
-      `http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Address/${id}`,
+      `https://d3gliasorrrnwn.cloudfront.net/api/Address/${id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

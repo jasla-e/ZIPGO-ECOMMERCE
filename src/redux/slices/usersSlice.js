@@ -1,7 +1,8 @@
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API = "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/User";
+const API = "https://d3gliasorrrnwn.cloudfront.net/api/User";
 
 // Fetch all users
 export const fetchUsersAsync = createAsyncThunk(
@@ -99,29 +100,23 @@ export const toggleUserBlockAsync = createAsyncThunk(
 
 const usersSlice = createSlice({
   name: "users",
-
   initialState: {
     users: [],
     loading: false,
     error: null,
   },
-
   reducers: {},
-
   extraReducers: (builder) => {
     builder
-
       // Fetch users
       .addCase(fetchUsersAsync.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-
       .addCase(fetchUsersAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.users = action.payload;
       })
-
       .addCase(fetchUsersAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -132,12 +127,10 @@ const usersSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-
       .addCase(searchUsersAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.users = action.payload;
       })
-
       .addCase(searchUsersAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -153,7 +146,6 @@ const usersSlice = createSlice({
           user.isBlocked = action.payload.isBlocked;
         }
       })
-
       .addCase(toggleUserBlockAsync.rejected, (state, action) => {
         state.error = action.payload;
       });
@@ -161,3 +153,4 @@ const usersSlice = createSlice({
 });
 
 export default usersSlice.reducer;
+

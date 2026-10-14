@@ -59,7 +59,7 @@ function Intro() {
   const fetchProducts = async () => {
     try {
       const res = await fetch(
-  "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Product"
+  "https://d3gliasorrrnwn.cloudfront.net/api/Product"
 );
 
       if (!res.ok) {

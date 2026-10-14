@@ -2,7 +2,7 @@
 import axios from "axios";
 import { getUser } from "../utils/auth";
 
-const BASE_URL = "http://zipgo-backend-env.eba-vwu38dej.ap-south-1.elasticbeanstalk.com/api/Wishlist";
+const BASE_URL = "https://d3gliasorrrnwn.cloudfront.net/api/Wishlist";
 
 const getCurrentUser = () => getUser();
 
